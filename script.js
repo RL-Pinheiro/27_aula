@@ -9,6 +9,7 @@ const listaDeEstudante = [
  
 const elementoLista = document.getElementById("listaEstudantes");
 const elementoContador = document.getElementById("contadorNomes");
+const campo = document.getElementById("campoNovoNome");
  
 function exibirListaAutomaticamente() {
     elementoLista.innerHTML = "";
@@ -26,37 +27,102 @@ function exibirListaAutomaticamente() {
     }
  
     elementoContador.innerText =
-        `total exibido: ${listaDeEstudante.length} estudantes cadastrados.`;
+        `Total exibido: ${listaDeEstudante.length} estudantes cadastrados.`;
  
     elementoContador.style.color = "#16a34a";
  
-    console.log("lista exibida com sucesso.");
+    console.log(
+        `Lista exibida com sucesso: ${listaDeEstudante.length} itens processados.`
+    );
+}
+ 
+function exibirOrdemInvertida() {
+    elementoLista.innerHTML = "";
+ 
+    let contador = listaDeEstudante.length - 1;
+ 
+    while (contador >= 0) {
+        const itemLi = document.createElement("li");
+        itemLi.className = "item-nome";
+ 
+        itemLi.innerHTML = `
+<span>${listaDeEstudante[contador]}</span>
+<span class="posicao-tag">#${contador + 1}</span>
+        `;
+ 
+        elementoLista.appendChild(itemLi);
+ 
+        contador--;
+    }
+ 
+    elementoContador.innerText =
+        `Exibindo ${listaDeEstudante.length} estudantes em ordem inversa.`;
+ 
+    elementoContador.style.color = "#2563eb";
+ 
+    console.log("Lista exibida em ordem inversa.");
 }
  
 function limparLista() {
     elementoLista.innerHTML = "";
-    elementoContador.innerText = "lista limpa pelo usuario. nenhum nome na tela.";
+ 
+    elementoContador.innerText =
+        "Lista limpa pelo usuário. Nenhum nome na tela.";
+ 
     elementoContador.style.color = "#475569";
  
-    console.log("tela limpa");
+    console.log("Tela limpa.");
 }
  
 function adicionarNovoNome() {
-    let campo = document.getElementById("campoNovoNome");
-    let nome = campo.value;
+    const nome = campo.value.trim();
  
-    if (nome.trim() === "") {
-        alert("digite um nome!");
+    if (nome === "") {
+        elementoContador.innerText = "Erro: digite um nome!";
+        elementoContador.style.color = "#dc2626";
+ 
         campo.focus();
         return;
     }
  
-    listaDeEstudante.push(nome.trim());
+    let duplicado = false;
+    let i = 0;
+ 
+    while (i < listaDeEstudante.length) {
+        if (
+            listaDeEstudante[i].toLowerCase() === nome.toLowerCase()
+        ) {
+            duplicado = true;
+            break;
+        }
+ 
+        i++;
+    }
+ 
+    if (duplicado) {
+        elementoContador.innerText =
+            `Erro: o nome "${nome}" já está cadastrado.`;
+ 
+        elementoContador.style.color = "#dc2626";
+ 
+        campo.focus();
+        campo.select();
+ 
+        return;
+    }
+ 
+    listaDeEstudante.push(nome);
  
     exibirListaAutomaticamente();
  
+    elementoContador.innerText =
+        `Sucesso: "${nome}" foi adicionado à lista!`;
+ 
+    elementoContador.style.color = "#16a34a";
+ 
     campo.value = "";
+    campo.focus();
     campo.select();
 }
  
-exibirListaAutomaticamente();
+exibirListaAutomaticamente()
